@@ -1,0 +1,38 @@
+#!/bin/bash
+# STOP! Before going any further, think: are you going to regret the decision
+# to write this script?
+#     Deciding to write this in bash was not one of my better decisions.
+#     -- https://twitter.com/alex_gaynor/status/369892494114164736
+
+IFS="`printf "\n\t"`"
+set -eu
+set -o pipefail
+cd "$(dirname "$0")"
+
+pgver="${1-}"
+input="${2-}"
+
+if [[ -z "$pgver" || -z "$input" ]]; then
+    echo "Usage: $0 <pgver> <test_file.sql>"
+    echo "For example:"
+    echo "    $0 14 ./tests/test_simple.sql"
+    exit 1
+fi
+
+PGHOST="${PGHOST-localhost}"
+PGPORT="${PGPORT-}"
+if [[ -z "$PGPORT" ]]; then
+    PGPORT="91${pgver}"
+fi
+PGUSER="${PGUSER-cltest}"
+PGPASSWORD="${PGPASSWORD-cltest}"
+PGDATABASE="${PGDATABASE-cltest}"
+
+export PGHOST PGPORT PGUSER PGPASSWORD PGDATABASE
+
+echo "Using host: psql://$PGUSER@$PGHOST:$PGPORT/$PGDATABASE"
+set -x
+dropdb --if-exists "$PGDATABASE"
+createdb "$PGDATABASE"
+psql < change_logs.sql
+psql --echo-all < "$input"

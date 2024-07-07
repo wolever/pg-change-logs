@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  pg12:
+    image: postgres:12
+    container_name: cl-pg12
+    ports:
+      - "9112:5432"
+    environment:
+      - POSTGRES_USER=cltest
+      - POSTGRES_PASSWORD=cltest
+      - POSTGRES_DB=cltest
+    command: "postgres -c 'shared_buffers=128MB' -c 'fsync=off' -c 'synchronous_commit=off' -c 'full_page_writes=off' -c 'max_connections=100' -c 'client_min_messages=warning'"
+  pg13:
+    image: postgres:13
+    container_name: cl-pg13
+    ports:
+      - "9113:5432"
+    environment:
+      - POSTGRES_USER=cltest
+      - POSTGRES_PASSWORD=cltest
+      - POSTGRES_DB=cltest
+    command: "postgres -c 'shared_buffers=128MB' -c 'fsync=off' -c 'synchronous_commit=off' -c 'full_page_writes=off' -c 'max_connections=100' -c 'client_min_messages=warning'"
+  pg14:
+    image: postgres:14
+    container_name: cl-pg14
+    ports:
+      - "9114:5432"
+    environment:
+      - POSTGRES_USER=cltest
+      - POSTGRES_PASSWORD=cltest
+      - POSTGRES_DB=cltest
+    command: "postgres -c 'shared_buffers=128MB' -c 'fsync=off' -c 'synchronous_commit=off' -c 'full_page_writes=off' -c 'max_connections=100' -c 'client_min_messages=warning'"
